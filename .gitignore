@@ -1,0 +1,38 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Environment and Secret Policy (Strict)
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+*.keystore
+
+# Exclude binary executables & packages (downloaded on startup or release)
+*.exe
+*.apk
+engine/bin/
+bin/
+
+# Download directories & temp storage
+engine/downloads/
+downloads/
+temp/
+tmp/
+*.tmp
+*.log
+
+# Python Virtual Environments
+venv/
+.venv/
+env/
+ENV/
+
+# IDE & OS files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Zytor Sovereign • Universal Downloader & bclone Cloud Engine</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="icon" href="https://zytor.vercel.app/icon.png" type="image/png">
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <nav class="navbar">
+    <div class="brand">
+      <div class="brand-icon">Z</div>
+      <div>
+        <span class="brand-name">Zytor</span>
+        <span class="brand-badge">Sovereign v1.2</span>
+      </div>
+    </div>
+
+    <div class="nav-actions">
+      <!-- Tor Onion Status Pill -->
+      <div class="status-pill" id="tor-status-pill" title="Click to view Tor Anonymity Center">
+        <div class="status-indicator" id="tor-indicator"></div>
+        <span id="tor-status-text">Checking Tor...</span>
+      </div>
+
+      <!-- Cloud Storage Status Pill -->
+      <div class="status-pill" id="cloud-vault-btn" title="Manage bclone Cloud Remotes & Crypt Vaults">
+        <span>☁️ Cloud Remotes:</span>
+        <strong id="remotes-count-text">0 Connected</strong>
+      </div>
+
+      <!-- TurboBolt Engine Settings -->
+      <button class="btn-icon" id="open-turbobolt-settings-btn" title="TurboBolt Engine Configuration">
+        <span>⚡ TurboBolt</span>
+      </button>
+
+      <!-- Manage Remotes -->
+      <button class="btn-icon" id="open-remotes-modal-btn">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 2v20m10-10H2"/></svg>
+        <span>Cloud Remotes</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Main Container -->
+  <main class="container">
+    
+    <!-- Hero Header -->
+    <header class="hero">
+      <h1 class="hero-title">The All-in-One Cloud & Media Downloader</h1>
+      <p class="hero-sub">
+        300+ Platforms • TurboBolt 64-Segment Engine • bclone Cloud Storage (Terabox, AList, GDrive, S3) • AES-256 Crypt Vaults • Tor Onion Routing
+      </p>
+
+      <!-- URL Input Bar -->
+      <div class="search-wrapper">
+        <div class="search-box">
+          <input 
+            type="text" 
+            id="url-input" 
+            class="search-input" 
+            placeholder="Paste video, audio, playlist, magnet link, or .onion URL..." 
+            autocomplete="off"
+          />
+          <div class="search-options">
+            <div class="toggle-chip active-turbobolt" id="chip-turbobolt" title="TurboBolt 64-Segment Acceleration">
+              ⚡ TurboBolt
+            </div>
+            <div class="toggle-chip" id="chip-tor" title="Route download traffic through Tor Onion network">
+              🧅 Tor Onion
+            </div>
+            <button class="btn-analyze" id="btn-analyze">Analyze Link</button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Official Zytor Filter & View Controls -->
+    <section class="dashboard">
+      <div class="filter-and-view-bar">
+        <!-- Media Type Filters (Official Zytor) -->
+        <div class="media-type-filters">
+          <button class="filter-pill active" data-filter="all">All Media</button>
+          <button class="filter-pill" data-filter="video">🎥 Videos</button>
+          <button class="filter-pill" data-filter="audio">🎵 Audio</button>
+          <button class="filter-pill" data-filter="image">🖼️ Images</button>
+        </div>
+
+        <!-- View Switcher (Official Zytor: Big Grid, Small Grid, List) -->
+        <div class="view-controls">
+          <button class="view-btn active" id="view-big-grid" title="Big Grid View">⊞ Big Grid</button>
+          <button class="view-btn" id="view-small-grid" title="Small Grid View">:: Small Grid</button>
+          <button class="view-btn" id="view-list" title="List View">☰ List</button>
+        </div>
+      </div>
+
+      <!-- Tabs Bar: Downloading vs Completed -->
+      <div class="tabs-bar">
+        <div class="tab-buttons">
+          <button class="tab-btn active" data-tab="active">Downloading (<span id="active-count">0</span>)</button>
+          <button class="tab-btn" data-tab="completed">Completed (<span id="completed-count">0</span>)</button>
+        </div>
+        <div>
+          <button class="btn-card-action" id="btn-clear-completed" title="Clear completed jobs">Clear Completed</button>
+        </div>
+      </div>
+
+      <!-- Jobs Container -->
+      <div id="jobs-container" class="jobs-grid-big">
+        <!-- Dynamic Cards Inserted Here -->
+        <div id="empty-state" style="grid-column: 1 / -1; text-align: center; padding: 60px 0; color: var(--text-muted);">
+          <svg width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" style="margin-bottom: 12px; opacity: 0.5;">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/>
+          </svg>
+          <p style="font-size: 15px;">No active downloads. Paste any link above to begin.</p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- MODAL 1: Official Zytor Download Configuration Drawer -->
+  <div class="modal-overlay" id="download-modal">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h2 class="modal-title">Download Configuration</h2>
+        <button class="btn-close" id="close-download-modal">&times;</button>
+      </div>
+
+      <!-- Media Preview Card -->
+      <div class="media-preview-card">
+        <img src="" alt="Thumbnail" id="modal-thumb" class="media-thumbnail">
+        <div class="media-info">
+          <h3 class="media-title" id="modal-title">Loading title...</h3>
+          <p class="media-uploader" id="modal-uploader">Unknown</p>
+          <span id="modal-onion-badge" class="brand-badge" style="display:none; background: rgba(139, 92, 246, 0.2); color: #c4b5fd; border-color: rgba(139, 92, 246, 0.4);">🧅 Onion Link Detected</span>
+        </div>
+      </div>
+
+      <!-- Video Resolution & Format Selection -->
+      <div class="config-group" id="video-qualities-group">
+        <label class="config-label">Video Resolution & Quality</label>
+        <div class="chips-row" id="video-qualities-row"></div>
+      </div>
+
+      <!-- Audio Format Selection -->
+      <div class="config-group" id="audio-qualities-group">
+        <label class="config-label">Audio Conversion & Extraction</label>
+        <div class="chips-row" id="audio-qualities-row"></div>
+      </div>
+
+      <!-- Video Container & Codec -->
+      <div class="config-group">
+        <label class="config-label">Container & Video Codec</label>
+        <div style="display: flex; gap: 10px;">
+          <select id="video-container-select" class="form-select" style="flex:1;">
+            <option value="mp4">Format: MP4 (Default)</option>
+            <option value="mkv">Format: MKV (Best for Subtitles)</option>
+            <option value="webm">Format: WebM</option>
+          </select>
+          <select id="video-codec-select" class="form-select" style="flex:1;">
+            <option value="auto">Codec: Auto (Best Available)</option>
+            <option value="av01">AV1 (Next-Gen High Efficiency)</option>
+            <option value="vp9">VP9 (High Quality)</option>
+            <option value="h264">H.264 / AVC (Most Compatible)</option>
+            <option value="h265">H.265 / HEVC</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Subtitles & Metadata Options (Official Zytor Features) -->
+      <div class="config-group">
+        <label class="config-label">Metadata & Subtitle Options</label>
+        <div class="checkbox-row" style="display:flex; flex-wrap:wrap; gap:16px; font-size:13px; color:var(--text-secondary);">
+          <label style="display:flex; align-items:center; gap:6px; cursor:pointer;">
+            <input type="checkbox" id="check-embed-metadata" checked> Embed Metadata (Artist, Title, Tags)
+          </label>
+          <label style="display:flex; align-items:center; gap:6px; cursor:pointer;">
+            <input type="checkbox" id="check-embed-thumbnail" checked> Embed Thumbnail / Artwork
+          </label>
+          <label style="display:flex; align-items:center; gap:6px; cursor:pointer;">
+            <input type="checkbox" id="check-embed-subs"> Embed Subtitles
+          </label>
+        </div>
+      </div>
+
+      <!-- Storage Target Selector (Local vs bclone Cloud vs Crypt) -->
+      <div class="config-group">
+        <label class="config-label">Storage Target (Local / bclone Cloud)</label>
+        <select id="storage-remote-select" class="form-select">
+          <option value="">💾 Local Storage (downloads/)</option>
+          <!-- bclone Remotes populated dynamically -->
+        </select>
+      </div>
+
+      <!-- Cloud Transfer Mode (Staged vs Zero-Disk Stream) -->
+      <div class="config-group" id="storage-mode-group" style="display:none;">
+        <label class="config-label">Cloud Transfer Mode</label>
+        <div class="chips-row">
+          <div class="select-chip selected" data-mode="sync_copy" id="mode-sync-chip">
+            🔄 Staged Cloud Copy (TurboBolt Local Fast + Auto Cloud Transfer)
+          </div>
+          <div class="select-chip" data-mode="direct_stream" id="mode-direct-chip">
+            ☁️ Zero-Disk Direct Stream (`rcat` directly into Cloud)
+          </div>
+        </div>
+      </div>
+
+      <!-- TurboBolt & Tor Network Controls -->
+      <div class="config-group">
+        <label class="config-label">Engine Multi-Threading & Anonymity</label>
+        <div class="chips-row">
+          <div class="select-chip selected" id="modal-toggle-turbobolt">
+            ⚡ TurboBolt 64-Segments
+          </div>
+          <div class="select-chip" id="modal-toggle-tor">
+            🧅 Tor Onion Routing Tunnel
+          </div>
+        </div>
+      </div>
+
+      <button class="btn-primary-action" id="btn-start-download">Start TurboBolt Download</button>
+    </div>
+  </div>
+
+  <!-- MODAL 2: bclone Cloud Remotes & Crypt Vaults Manager -->
+  <div class="modal-overlay" id="remotes-modal">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h2 class="modal-title">☁️ bclone Cloud Storage Manager</h2>
+        <button class="btn-close" id="close-remotes-modal">&times;</button>
+      </div>
+
+      <div style="display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap;">
+        <button class="btn-card-action" id="tab-connected-remotes" style="flex:1; padding: 10px;">Connected Remotes</button>
+        <button class="btn-card-action" id="tab-add-remote" style="flex:1; padding: 10px;">+ Connect Provider</button>
+        <button class="btn-card-action" id="tab-add-crypt" style="flex:1; padding: 10px; color: var(--accent-violet);">🔒 New Crypt Vault</button>
+        <button class="btn-card-action" id="tab-raw-config" style="flex:1; padding: 10px; color: var(--accent-cyan);">⚙️ Raw bclone.conf</button>
+      </div>
+
+      <!-- View 1: Connected Remotes List -->
+      <div id="remotes-list-view">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+          <span style="font-size:13px; color:var(--text-secondary);">Active Cloud Connections & Encrypted Vaults</span>
+          <button class="btn-card-action" id="btn-import-system-remotes" style="background:rgba(16,185,129,0.15); border-color:var(--accent-emerald); color:var(--accent-emerald);">
+            📥 Auto-Import System rclone.conf
+          </button>
+        </div>
+        <div id="remotes-cards-container" style="display:flex; flex-direction:column; gap:10px;"></div>
+      </div>
+
+      <!-- View 2: Add Remote Form (Interactive & Non-Interactive Ready) -->
+      <div id="add-remote-view" style="display:none;">
+        <div class="config-group">
+          <label class="config-label">Provider Type</label>
+          <select id="new-remote-type" class="form-select">
+            <option value="terabox">Terabox (bclone Enhanced - High Capacity)</option>
+            <option value="alist">AList (bclone Enhanced - 30+ Clouds Gateway)</option>
+            <option value="teldrive">Tel Drive (bclone Enhanced - Telegram Storage)</option>
+            <option value="gotohp">Google Photos (bclone Enhanced Unofficial)</option>
+            <option value="mega">Mega.nz (Direct Account)</option>
+            <option value="webdav">WebDAV (Nextcloud / ownCloud / Seedbox)</option>
+            <option value="s3">Amazon S3 / Cloudflare R2 / MinIO / Wasabi</option>
+            <option value="drive">Google Drive</option>
+            <option value="onedrive">Microsoft OneDrive</option>
+            <option value="dropbox">Dropbox</option>
+            <option value="local">External Hard Drive / Local Path</option>
+          </select>
+        </div>
+        <div class="config-group">
+          <label class="config-label">Remote Name (Unique identifier, e.g. my_terabox)</label>
+          <input type="text" id="new-remote-name" class="form-input" placeholder="e.g. my_cloud_remote">
+        </div>
+        <div id="remote-custom-fields" class="config-group">
+          <!-- Dynamically populated provider input fields -->
+        </div>
+        <button class="btn-primary-action" id="btn-save-remote">Save Cloud Remote</button>
+      </div>
+
+      <!-- View 3: Add Crypt Vault Form -->
+      <div id="add-crypt-view" style="display:none;">
+        <div style="background: rgba(139, 92, 246, 0.1); border: 1px solid rgba(139, 92, 246, 0.3); border-radius: 12px; padding: 12px; margin-bottom: 16px; font-size: 13px; color: #d8b4fe;">
+          🔒 <strong>Zero-Knowledge Client-Side Encryption</strong>: Files and directory names are encrypted with AES-256 on your machine before they are uploaded. Your cloud provider (Terabox, Google Drive, S3, etc.) sees only scrambled ciphertext.
+        </div>
+        <div class="config-group">
+          <label class="config-label">Crypt Vault Name</label>
+          <input type="text" id="crypt-vault-name" class="form-input" placeholder="e.g. secret_vault">
+        </div>
+        <div class="config-group">
+          <label class="config-label">Base Cloud Remote (Underlying storage destination)</label>
+          <select id="crypt-base-remote" class="form-select"></select>
+        </div>
+        <div class="config-group">
+          <label class="config-label">Base Directory Path</label>
+          <input type="text" id="crypt-base-path" class="form-input" value="EncryptedVault">
+        </div>
+        <div class="config-group">
+          <label class="config-label">Encryption Password / Passphrase</label>
+          <input type="password" id="crypt-password" class="form-input" placeholder="Enter secure encryption password">
+        </div>
+        <div class="config-group">
+          <label class="config-label">Encryption Salt (Optional secondary password)</label>
+          <input type="password" id="crypt-salt" class="form-input" placeholder="Optional salt key">
+        </div>
+        <button class="btn-primary-action" id="btn-create-crypt" style="background: linear-gradient(135deg, #8b5cf6 0%, #06b6d4 100%);">Initialize AES-256 Crypt Vault</button>
+      </div>
+
+      <!-- View 4: Raw bclone.conf Editor (100% Control) -->
+      <div id="raw-config-view" style="display:none;">
+        <div style="font-size:13px; color:var(--text-secondary); margin-bottom:8px;">
+          Directly inspect or paste any standard <code>rclone.conf</code> / <code>bclone.conf</code> configuration blocks below:
+        </div>
+        <textarea id="raw-config-textarea" class="form-input" style="height: 240px; font-family: monospace; font-size: 12px; white-space: pre; line-height: 1.4;"></textarea>
+        <div style="display:flex; gap:10px; margin-top:10px;">
+          <button class="btn-primary-action" id="btn-save-raw-config" style="flex:1;">Save bclone.conf</button>
+          <button class="btn-card-action" id="btn-reload-raw-config" style="padding:12px 20px;">Reload</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- MODAL 3: Tor Onion Privacy Center -->
+  <div class="modal-overlay" id="tor-modal">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h2 class="modal-title">🧅 Tor Onion Privacy Center</h2>
+        <button class="btn-close" id="close-tor-modal">&times;</button>
+      </div>
+
+      <div style="display:flex; flex-direction:column; gap:16px;">
+        <div class="media-preview-card" style="align-items:center;">
+          <div style="font-size: 32px; padding: 10px;">🧅</div>
+          <div>
+            <h4 style="font-size: 16px; color:#fff; margin-bottom:4px;">Native Onion Routing Tunnel</h4>
+            <p id="tor-modal-status-detail" style="font-size: 13px; color: var(--text-secondary);">Connecting to Tor SOCKS5 proxy...</p>
+          </div>
+        </div>
+
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+          <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); border-radius: 14px; padding: 14px;">
+            <div style="font-size: 11px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 4px;">Clearnet Public IP</div>
+            <div id="tor-clearnet-ip" style="font-size: 15px; font-weight:700; color:#fff;">Fetching...</div>
+          </div>
+          <div style="background: rgba(139, 92, 246, 0.08); border: 1px solid rgba(139, 92, 246, 0.3); border-radius: 14px; padding: 14px;">
+            <div style="font-size: 11px; text-transform: uppercase; color: var(--accent-violet); margin-bottom: 4px;">Tor Exit IP</div>
+            <div id="tor-exit-ip" style="font-size: 15px; font-weight:700; color:#fff;">Checking...</div>
+          </div>
+        </div>
+
+        <button class="btn-primary-action" id="btn-rotate-circuit" style="background: rgba(139, 92, 246, 0.2); border: 1px solid rgba(139, 92, 246, 0.5); color: #fff;">
+          🔄 Acquire New Tor Identity / Circuit (NEWNYM)
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL 4: TurboBolt Engine Settings (Official Zytor Feature) -->
+  <div class="modal-overlay" id="turbobolt-modal">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h2 class="modal-title">⚡ TurboBolt Engine Settings</h2>
+        <button class="btn-close" id="close-turbobolt-modal">&times;</button>
+      </div>
+
+      <div class="config-group">
+        <label class="config-label">TurboBolt Speed Booster</label>
+        <p style="font-size:12px; color:var(--text-secondary); margin-bottom:8px;">Increases throughput up to 500% with extreme parallel segment splitting.</p>
+        <div class="select-chip selected" id="setting-turbobolt-booster">⚡ TurboBolt Enabled (Active)</div>
+      </div>
+
+      <div class="config-group">
+        <label class="config-label">Max Segments Per File: <span id="val-segments">64</span></label>
+        <input type="range" id="setting-segments" min="4" max="64" step="4" value="64" style="width:100%;">
+      </div>
+
+      <div class="config-group">
+        <label class="config-label">Connections Per Host: <span id="val-connections">32</span></label>
+        <input type="range" id="setting-connections" min="2" max="32" step="2" value="32" style="width:100%;">
+      </div>
+
+      <div class="config-group">
+        <label class="config-label">Adaptive Minimum Split Size</label>
+        <select id="setting-min-split" class="form-select">
+          <option value="1">1 MB</option>
+          <option value="2" selected>2 MB (Recommended)</option>
+          <option value="5">5 MB</option>
+          <option value="10">10 MB</option>
+          <option value="20">20 MB</option>
+        </select>
+      </div>
+
+      <div class="config-group">
+        <label class="config-label">Bandwidth Restrictions</label>
+        <div class="select-chip selected" id="setting-unlimited-speed">Unlimited Speed Mode (Uncapped)</div>
+      </div>
+
+      <button class="btn-primary-action" id="btn-save-turbobolt-settings">Save TurboBolt Preferences</button>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
