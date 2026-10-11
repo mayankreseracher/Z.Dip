@@ -1,0 +1,70 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "zdip"
+version = "1.2.0"
+description = "A Tool which allows extracting videos from torrents and 200+ platforms and storing on cloud with custom support for reinforcing new protocols."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "GPL-3.0-only" }
+authors = [
+    { name = "Mayank", email = "mayank@users.noreply.github.com" }
+]
+keywords = [
+    "video-downloader",
+    "torrent-extractor",
+    "bclone",
+    "rclone",
+    "cloud-storage",
+    "tor-proxy",
+    "terabox",
+    "crypt-vault",
+    "turbobolt",
+    "protocol-reinforcement"
+]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: End Users/Desktop",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Internet :: WWW/HTTP",
+    "Topic :: Multimedia :: Video",
+]
+
+dependencies = [
+    "fastapi>=0.110.0",
+    "uvicorn[standard]>=0.28.0",
+    "websockets>=12.0",
+    "pydantic>=2.6.0",
+    "aiohttp>=3.9.0",
+    "requests>=2.31.0",
+    "yt-dlp>=2024.08.0"
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0.0",
+    "pytest-asyncio>=0.23.0",
+    "ruff>=0.3.0",
+    "mypy>=1.8.0"
+]
+
+[project.scripts]
+zdip = "zdip.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/mayankreseracher/Z.Dip"
+Documentation = "https://github.com/mayankreseracher/Z.Dip#readme"
+Repository = "https://github.com/mayankreseracher/Z.Dip.git"
+Issues = "https://github.com/mayankreseracher/Z.Dip/issues"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["zdip*"]

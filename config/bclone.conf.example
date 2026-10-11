@@ -1,0 +1,16 @@
+# Z.Dip / bclone Configuration Template
+# Define cloud remotes and AES-256 Crypt Vaults below.
+# Remotes can also be managed visually via the OLED Dashboard (http://127.0.0.1:8088).
+
+[terabox]
+type = terabox
+
+[gdrive]
+type = drive
+scope = drive
+
+[vault]
+type = crypt
+remote = terabox:/ZytorEncrypted
+filename_encryption = standard
+directory_name_encryption = true

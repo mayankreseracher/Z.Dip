@@ -24,6 +24,15 @@ temp/
 tmp/
 *.tmp
 *.log
+config/bclone.conf
+config/*.json
+engine/config/*.json
+
+# Build & Distribution
+build/
+dist/
+*.egg-info/
+
 
 # Python Virtual Environments
 venv/

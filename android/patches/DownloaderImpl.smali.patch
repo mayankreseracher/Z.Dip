@@ -1,0 +1,13 @@
+--- a/smali_classes3/com/imkkingshuk/zytor/core/data/repository/DownloaderImpl$download$1.smali
++++ b/smali_classes3/com/imkkingshuk/zytor/core/data/repository/DownloaderImpl$download$1.smali
+@@ -1024,6 +1024,14 @@
+     invoke-static {p0, v0, v4}, Lcom/imkkingshuk/zytor/core/data/repository/DownloaderImpl;->access$setDownloadState(Lcom/imkkingshuk/zytor/core/data/repository/DownloaderImpl;Lcom/imkkingshuk/zytor/core/data/model/Task;Lcom/imkkingshuk/zytor/core/data/model/Task$DownloadState;)V
+ 
++    # Bclone cloud uploader trigger upon download completion
++    invoke-static {p0}, Lcom/imkkingshuk/zytor/core/data/repository/DownloaderImpl;->access$getAppContext$p(Lcom/imkkingshuk/zytor/core/data/repository/DownloaderImpl;)Landroid/content/Context;
++
++    move-result-object v4
++
++    invoke-static {v4, v3}, Lcom/imkkingshuk/zytor/core/cloud/BcloneCloudUploader;->uploadIfEnabled(Landroid/content/Context;Ljava/lang/String;)V
++
+     return-object v2

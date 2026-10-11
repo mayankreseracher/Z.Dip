@@ -1,0 +1,31 @@
+--- a/res/values/strings.xml
++++ b/res/values/strings.xml
+@@ -100,7 +100,7 @@
+-    <string name="settings_title_dweb">Web3 &amp; IPFS Settings</string>
+-    <string name="settings_desc_dweb">Configure Web3 Services &amp; Gateways</string>
+-    <string name="web3_subtitle">Web3 Settings</string>
+-    <string name="web3_enable">Enable Web3</string>
+-    <string name="web3_provider">Web3 Provider</string>
+-    <string name="web3_network">Network</string>
+-    <string name="web3_network_desc">Select network</string>
+-    <string name="web3_walletconnect">WalletConnect</string>
+-    <string name="filecoin_subtitle">Filecoin Settings</string>
+-    <string name="filecoin_enable">Enable Filecoin</string>
+-    <string name="filecoin_api_key">API Key</string>
+-    <string name="filecoin_api_key_desc">Configure key</string>
+-    <string name="filecoin_advanced">Advanced</string>
+-    <string name="filecoin_advanced_desc">Configure settings</string>
++    <string name="settings_title_dweb">Cloud Storage &amp; Remotes (bclone)</string>
++    <string name="settings_desc_dweb">Sync, copy, or stream directly to Terabox, GDrive, Crypt</string>
++    <string name="web3_subtitle">Cloud Storage (bclone)</string>
++    <string name="web3_enable">Enable Cloud Remotes (bclone)</string>
++    <string name="web3_provider">Active Remote Target</string>
++    <string name="web3_network">Cloud Remote Provider</string>
++    <string name="web3_network_desc">Terabox, Google Drive, Alist, Alldebrid, WebDAV, Crypt</string>
++    <string name="web3_walletconnect">Auto-Sync on Download Complete</string>
++    <string name="filecoin_subtitle">Security &amp; Encryption Vault</string>
++    <string name="filecoin_enable">Client-Side Encryption (AES-256 Crypt)</string>
++    <string name="filecoin_api_key">Remote Target Path</string>
++    <string name="filecoin_api_key_desc">Destination cloud folder (e.g. /ZytorDownloads)</string>
++    <string name="filecoin_advanced">bclone Vault Engine</string>
++    <string name="filecoin_advanced_desc">Zero-knowledge encrypted cloud storage bridge</string>
